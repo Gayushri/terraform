@@ -4,13 +4,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git 'https://github.com/Gayushri/terraform.git'
             }
         }
     
         stage ("terraform init") {
             steps {
-                sh ("terraform init -reconfigure") 
+                sh ("terraform init") 
             }
         }
         stage ("plan") {
