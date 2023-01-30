@@ -1,0 +1,12 @@
+provider "aws" {
+    access_key = "AKIAQQBJ7VNGHZKDZUIF"
+    secret_key = "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"
+    region     = "ap-south-1"
+}
+
+resource "aws_instance" "first_instance" {
+    ami           = "ami-0be0a52ed3f231c12"
+    instance_type = "t2.micro"
+        tags = {
+         Name = "server1"
+        }
