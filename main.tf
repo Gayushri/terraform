@@ -46,7 +46,7 @@ resource "aws_internet_gateway" "web-gw" {
 }
 
 #creating routing table
-resource "aws_route_table" "web-public" {
+resource "aws_route_table" "web-public1" {
   vpc_id = aws_vpc.web.id
  route {
     cidr_block = "0.0.0.0/0"
@@ -59,7 +59,7 @@ resource "aws_route_table" "web-public" {
 }
 
 #creating routing table 
-resource "aws_route_table" "web-private" {
+resource "aws_route_table" "web-private1" {
   vpc_id = aws_vpc.web.id
  route {
     cidr_block = "0.0.0.0/0"
