@@ -13,26 +13,26 @@ resource "aws_vpc" "web" {
 }
 
 #Creating public subnets to vpc
-resource "aws_subnet" "web-public" {
+resource "aws_subnet" "web-public1" {
   vpc_id                        = aws_vpc.web.id
   cidr_block                    = "10.0.0.0/25"
   map_public_ip_on_launch       = "true"
   availability_zone             = "ap-south-1a"
 
   tags = {
-    Name = "web-public"
+    Name = "web-public1"
   }
 }
 
 #Creating private subnets to vpc
-resource "aws_subnet" "web-private" {
+resource "aws_subnet" "web-private1" {
   vpc_id                        = aws_vpc.web.id
   cidr_block                    = "10.0.0.128/26"
   map_public_ip_on_launch       = "false"
   availability_zone             = "ap-south-1b"
 
   tags = {
-    Name = "web-private"
+    Name = "web-private1"
   }
 }
 
@@ -45,50 +45,50 @@ resource "aws_internet_gateway" "web-gw" {
   }
 }
 
-#creating routing table to public
-resource "aws_route_table" "web-public-gw" {
-  vpc_id = aws_vpc.web-public-gw.id
+#creating routing table
+resource "aws_route_table" "web-public" {
+  vpc_id = aws_vpc.web.id
  route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.web-public-gw.id
+    gateway_id = aws_internet_gateway.web-gw.id
   }
 
  tags = {
-    Name = "web-public-gw"
+    Name = "web-public1"
   }
 }
 
-#creating routing table to private
-resource "aws_route_table" "web-private-gw" {
-  vpc_id = aws_vpc.web-private-gw.id
+#creating routing table 
+resource "aws_route_table" "web-private" {
+  vpc_id = aws_vpc.web.id
  route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.web-private-gw.id
+    gateway_id = aws_internet_gateway.web-gw.id
   }
 
  tags = {
-    Name = "web-private-gw"
+    Name = "web-private1"
   }
 }
 
 
 #create route associations with public
-resource "aws_route_table_association" "web-public" {
-  subnet_id      = aws_subnet.web-public.id
-  route_table_id = aws_route_table.web-public-gw.id
+resource "aws_route_table_association" "web-public1-a" {
+  subnet_id      = aws_subnet.web-public1.id
+  route_table_id = aws_route_table.web-gw.id
 }
 
 #create route associations with private
-resource "aws_route_table_association" "web-private" {
-  subnet_id      = aws_subnet.web-private.id
-  route_table_id = aws_route_table.web-private-gw.id
+resource "aws_route_table_association" "web-private1-a" {
+  subnet_id      = aws_subnet.web-private1.id
+  route_table_id = aws_route_table.web-gw.id
 }
 
 #creating EC2
 resource "aws_instance" "server1" {
   ami                           = "ami-0be0a52ed3f231c12"
   instance_type                 = "t2.micro"
-  subnet_id                     = aws_subnet.web-public.id
+  subnet_id                     = aws_subnet.web-public1.id
   associate_public_ip_address   = true
   key_name                      = "Pkey"
 
