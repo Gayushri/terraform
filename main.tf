@@ -90,7 +90,7 @@ resource "aws_instance" "server1" {
   instance_type                 = "t2.micro"
   subnet_id                     = aws_subnet.web-public1.id
   associate_public_ip_address   = true
-  key_name                      = "Pkey"
+  key_name                      = "key_pair"
 
   tags = {
     Name = "server1"
