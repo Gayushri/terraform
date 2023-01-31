@@ -24,6 +24,18 @@ resource "aws_subnet" "web-public" {
   }
 }
 
+#Creating private subnets to vpc
+resource "aws_subnet" "web-private" {
+  vpc_id                        = aws_vpc.web.id
+  cidr_block                    = "10.0.2.0/24"
+  map_public_ip_on_launch       = "false"
+  availability_zone             = "ap-south-1b"
+
+  tags = {
+    Name = "web-private"
+  }
+}
+
 #creating IGW to VPC
 resource "aws_internet_gateway" "web-gw" {
   vpc_id = aws_vpc.web.id
@@ -34,7 +46,7 @@ resource "aws_internet_gateway" "web-gw" {
 }
 
 #creating routing table to IGW
-resource "aws_route_table" "web-public1" {
+resource "aws_route_table" "web-public-gw" {
   vpc_id = aws_vpc.web.id
  route {
     cidr_block = "0.0.0.0/0"
@@ -42,16 +54,23 @@ resource "aws_route_table" "web-public1" {
   }
 
  tags = {
-    Name = "web-public1"
+    Name = "web-public"
   }
 }
 
-#create route associations with pubic
+
+
+#create route associations with public
 resource "aws_route_table_association" "web-public" {
   subnet_id      = aws_subnet.web-public.id
-  route_table_id = aws_route_table.web-public1.id
+  route_table_id = aws_route_table.web-public.id
 }
 
+#create route associations with private
+resource "aws_route_table_association" "web-private" {
+  subnet_id      = aws_subnet.web-private.id
+  route_table_id = aws_route_table.web-private.id
+}
 
 #creating EC2
 resource "aws_instance" "server1" {
