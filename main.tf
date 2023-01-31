@@ -47,27 +47,27 @@ resource "aws_internet_gateway" "web-gw" {
 
 #creating routing table to public
 resource "aws_route_table" "web-public-gw" {
-  vpc_id = aws_vpc.web.id
+  vpc_id = aws_vpc.web-public-gw.id
  route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.web-gw.id
+    gateway_id = aws_internet_gateway.web-public-gw.id
   }
 
  tags = {
-    Name = "web-public"
+    Name = "web-public-gw"
   }
 }
 
 #creating routing table to private
 resource "aws_route_table" "web-private-gw" {
-  vpc_id = aws_vpc.web.id
+  vpc_id = aws_vpc.web-private-gw.id
  route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.web-gw.id
+    gateway_id = aws_internet_gateway.web-private-gw.id
   }
 
  tags = {
-    Name = "web-private"
+    Name = "web-private-gw"
   }
 }
 
@@ -75,13 +75,13 @@ resource "aws_route_table" "web-private-gw" {
 #create route associations with public
 resource "aws_route_table_association" "web-public" {
   subnet_id      = aws_subnet.web-public.id
-  route_table_id = aws_route_table.web-public.id
+  route_table_id = aws_route_table.web-public-gw.id
 }
 
 #create route associations with private
 resource "aws_route_table_association" "web-private" {
   subnet_id      = aws_subnet.web-private.id
-  route_table_id = aws_route_table.web-private.id
+  route_table_id = aws_route_table.web-private-gw.id
 }
 
 #creating EC2
