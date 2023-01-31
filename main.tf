@@ -4,7 +4,7 @@ provider "aws" {
 
 #Creating vpc, CIDR with tags
 resource "aws_vpc" "web" {
-  cidr_block       = "10.0.0.0/16"
+  cidr_block       = "10.0.0.0/24"
   instance_tenancy = "default"
 
   tags = {
@@ -15,7 +15,7 @@ resource "aws_vpc" "web" {
 #Creating public subnets to vpc
 resource "aws_subnet" "web-public" {
   vpc_id                        = aws_vpc.web.id
-  cidr_block                    = "10.0.1.0/24"
+  cidr_block                    = "10.0.0.0/25"
   map_public_ip_on_launch       = "true"
   availability_zone             = "ap-south-1a"
 
@@ -27,7 +27,7 @@ resource "aws_subnet" "web-public" {
 #Creating private subnets to vpc
 resource "aws_subnet" "web-private" {
   vpc_id                        = aws_vpc.web.id
-  cidr_block                    = "10.0.2.0/24"
+  cidr_block                    = "10.0.0.128/26"
   map_public_ip_on_launch       = "false"
   availability_zone             = "ap-south-1b"
 
@@ -45,7 +45,7 @@ resource "aws_internet_gateway" "web-gw" {
   }
 }
 
-#creating routing table to IGW
+#creating routing table to public
 resource "aws_route_table" "web-public-gw" {
   vpc_id = aws_vpc.web.id
  route {
@@ -58,6 +58,18 @@ resource "aws_route_table" "web-public-gw" {
   }
 }
 
+#creating routing table to private
+resource "aws_route_table" "web-private-gw" {
+  vpc_id = aws_vpc.web.id
+ route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.web-gw.id
+  }
+
+ tags = {
+    Name = "web-private"
+  }
+}
 
 
 #create route associations with public
