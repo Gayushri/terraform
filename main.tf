@@ -75,13 +75,13 @@ resource "aws_route_table" "web-private1" {
 #create route associations with public
 resource "aws_route_table_association" "web-public1" {
   subnet_id      = aws_subnet.web-public1.id
-  route_table_id = aws_route_table.public1.id
+  route_table_id = aws_route_table.web-public1.id
 }
 
 #create route associations with private
 resource "aws_route_table_association" "web-private1" {
   subnet_id      = aws_subnet.web-private1.id
-  route_table_id = aws_route_table.private1.id
+  route_table_id = aws_route_table.web-private1.id
 }
 
 #creating EC2
