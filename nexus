@@ -1,0 +1,43 @@
+stage("Upload War To Nexus"){
+            steps{
+                script{
+                  def mavenPom = readMavenPom file: 'pom.xml'
+                  def nexusRepoName = mavenPom.version.endsWith("SNAPSHOT") ? "simpleapp-snapshot" : "simpleapp-release"
+                   nexusArtifactUploader artifacts: [
+                     [
+                        artifactId: 'maven-project', 
+                        classifier: '', 
+                        file: "target/simple-app-${mavenPom.version}.war", 
+                        type: 'war'
+                        ]
+                    ], 
+                        credentialsId: 'nexus3', 
+                        groupId: 'com.example.maven-project', 
+                        nexusUrl: '13.232.154.74:8081/', 
+                        nexusVersion: 'nexus3', 
+                        protocol: 'http', 
+                        repository: 'Myapp-Snapshot', 
+                        version: "${mavenPom.version}"
+                }
+           }
+        }
+        stage('Upload war to Nexus'){  
+                      steps{                          
+  script{                                                         
+  def readPomVersion = readMavenPom file: 'pom.xml'                   
+ def nexusRepo = readPomVersion.version.endsWith("SNAPSHOT") ? "skan-snapshot" : "skanjob"                   
+ nexusArtifactUploader artifacts:                         [[artifactId: 'dockeransible',                         
+ classifier: '',                         
+ file: 'target/dockeransible.war',                           
+type: 'war']],                         
+credentialsId: 'nexus-pwd',                        
+ groupId: 'in.javahome',                        
+nexusUrl: '13.40.36.65:8081',                         
+nexusVersion: 'nexus3',                        
+protocol: 'http',                        
+repository: 'nexusRepo',                         
+version: "${readPomVersion.version}"                              
+  }            
+  }
+        
+        
