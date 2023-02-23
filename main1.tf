@@ -11,7 +11,7 @@ resource "google_project_service" "run_api" {
 }
 
 resource "google_cloud_run_service" "run_service" {
-  name     = "mywebapp"
+  name     = "newimage"
   location = "asia-south1"
   template {
     spec {
